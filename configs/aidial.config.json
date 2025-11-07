@@ -1,0 +1,63 @@
+{
+  "models": {
+    "deepseek-r1:14b": {
+      "type": "chat",
+      "displayName": "DeepSeek R1 14B (Local)",
+      "iconUrl": "https://ollama.com/public/ollama.png",
+      "endpoint": "http://host.docker.internal:11434/v1/chat/completions",
+      "upstreams": [
+        {
+          "endpoint": "http://host.docker.internal:11434/v1"
+        }
+      ]
+    },
+    "claude-3-5-sonnet": {
+      "type": "chat",
+      "displayName": "Claude 3.5 Sonnet",
+      "iconUrl": "https://www.anthropic.com/images/icons/apple-touch-icon.png",
+      "endpoint": "https://api.anthropic.com/v1/messages",
+      "upstreams": [
+        {
+          "endpoint": "https://api.anthropic.com/v1",
+          "key": ""
+        }
+      ]
+    },
+    "gpt-3.5-turbo": {
+      "type": "chat",
+      "displayName": "GPT-3.5 Turbo",
+      "iconUrl": "https://cdn.openai.com/API/logo.png",
+      "endpoint": "https://api.openai.com/v1/chat/completions",
+      "upstreams": [
+        {
+          "endpoint": "https://api.openai.com/v1",
+          "key": ""
+        }
+      ]
+    }
+  },
+  "roles": {
+    "default": {
+      "limits": {
+        "deepseek-r1:14b": {
+          "minute": "10000",
+          "day": "100000"
+        },
+        "claude-3-5-sonnet": {
+          "minute": "10000",
+          "day": "100000"
+        },
+        "gpt-3.5-turbo": {
+          "minute": "10000",
+          "day": "100000"
+        }
+      }
+    }
+  },
+  "keys": {
+    "dev-key": {
+      "project": "Development",
+      "role": "default"
+    }
+  }
+}

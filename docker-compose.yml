@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # Redis - Required for DIAL Core
+  redis:
+    image: redis:7-alpine
+    container_name: dial-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - dial-network
+
+  # AI DIAL Core Backend
+  dial-core:
+    build:
+      context: ./ai-dial-core
+      dockerfile: Dockerfile
+      args:
+        GPR_USERNAME: ${GPR_USERNAME}
+        GPR_PASSWORD: ${GPR_PASSWORD}
+    container_name: dial-core
+    ports:
+      - "8080:8080"
+    environment:
+      - AIDIAL_SETTINGS=/app/config/aidial.settings.json
+    volumes:
+      - ./ai-dial-core/aidial.settings.docker.json:/app/config/aidial.settings.json:ro
+      - ./ai-dial-core/aidial.config.json:/app/config/aidial.config.json:ro
+      - dial-data:/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - dial-network
+    restart: unless-stopped
+
+  # AI DIAL Chat UI
+  dial-chat:
+    build:
+      context: ./ai-dial-chat
+      dockerfile: Dockerfile
+    container_name: dial-chat
+    ports:
+      - "3000:3000"
+    environment:
+      - DIAL_API_HOST=http://dial-core:8080
+      - DIAL_API_KEY=dev-key
+      - DIAL_API_VERSION=2025-01-01-preview
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-2AG38rA4rucvUItAHDNDEQhPmculqp7SZ8oGAzq3j3k=}
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXT_PUBLIC_APP_NAME=AI DIAL
+      - STORAGE_TYPE=api
+    depends_on:
+      dial-core:
+        condition: service_healthy
+    networks:
+      - dial-network
+    restart: unless-stopped
+
+networks:
+  dial-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  dial-data:

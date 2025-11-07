@@ -1,0 +1,32 @@
+{
+  "server": {
+    "port": 8080
+  },
+  "config": {
+    "files": ["/Users/guptarohyt/workspace/learning/dial/ai-dial-core/aidial.config.json"],
+    "reload": 60000
+  },
+  "redis": {
+    "singleServerConfig": {
+      "address": "redis://localhost:6379"
+    }
+  },
+  "identityProviders": {
+    "test": {
+      "disableJwtVerification": true,
+      "rolePath": "roles"
+    }
+  },
+  "storage": {
+    "provider": "filesystem",
+    "bucket": "dial-dev",
+    "createBucket": true,
+    "overrides": {
+      "jclouds.filesystem.basedir": "./data"
+    }
+  },
+  "encryption": {
+    "key": "local-dev-key-32-characters!!",
+    "secret": "local-dev-secret-32-chars!!!"
+  }
+}
