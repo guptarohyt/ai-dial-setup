@@ -3,7 +3,7 @@
     "port": 8080
   },
   "config": {
-    "files": ["/Users/guptarohyt/workspace/learning/dial/ai-dial-core/aidial.config.json"],
+    "files": ["AIDIAL_CONFIG_FILE_PLACEHOLDER"],
     "reload": 60000
   },
   "redis": {

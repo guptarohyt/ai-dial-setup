@@ -17,10 +17,18 @@ fi
 echo ""
 echo "📋 Copying configuration files..."
 
+# Get absolute path for config file
+CURRENT_DIR=$(pwd)
+CONFIG_FILE_PATH="${CURRENT_DIR}/ai-dial-core/aidial.config.json"
+
 # Copy config files
-cp configs/aidial.settings.json ai-dial-core/
+cp configs/aidial.settings.json ai-dial-core/aidial.settings.json.tmp
 cp configs/aidial.settings.docker.json ai-dial-core/
 cp configs/aidial.config.json ai-dial-core/
+
+# Substitute the config file path in settings
+sed "s|AIDIAL_CONFIG_FILE_PLACEHOLDER|${CONFIG_FILE_PATH}|g" ai-dial-core/aidial.settings.json.tmp > ai-dial-core/aidial.settings.json
+rm ai-dial-core/aidial.settings.json.tmp
 
 # Copy Dockerfiles
 cp dockerfiles/backend.Dockerfile ai-dial-core/Dockerfile
